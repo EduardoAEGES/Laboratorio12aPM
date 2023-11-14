@@ -91,12 +91,21 @@ fun ScreenLogin(navController: NavHostController) {
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
-                    if (username == "" || password == "") {
+                    if (username.isEmpty() || password.isEmpty()) {
                         logeado = "null>null"
                     } else {
-                        logeado = username + ">" + password
+                        // Realizar la autenticación con Firebase
+                        auth.signInWithEmailAndPassword(username, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // Autenticación exitosa, navegar a la siguiente pantalla
+                                    navController.navigate("response/$username")
+                                } else {
+                                    // Autenticación fallida, manejar el error según sea necesario
+                                    logeado = "null>null"
+                                }
+                            }
                     }
-                    navController.navigate("response/$logeado")
                 },
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(Color(40, 52, 119, 255)),
